@@ -1,3 +1,5 @@
+package game.engine
+
 import utils.Constants.{DimMessage, FilePath, ZeroInt}
 
 import scala.io.{Source, StdIn}
@@ -11,9 +13,8 @@ object WordGenerator {
     bufferedSource.close()
     words
   }
-  def generateWord: String = {
-    val dim = StdIn.readLine(DimMessage).trim.toInt // todo meter comprobaciones
-
+  
+  def generateWord(dim: Int): String = {
     val wordsLengthDim = readWordsFile
       .filter(_.length == dim)
 

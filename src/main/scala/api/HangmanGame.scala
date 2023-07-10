@@ -1,8 +1,12 @@
 package api
 
+import game.engine.HangmanEngine
+import game.engine.HangmanEngine.Error
+
 trait HangmanGame {
 
-  def playLetter(letter: Char): Either[String, HangmanGame]
+  val secretWord: String
+  def playLetter(letter: Char):  Either[Error,  HangmanEngine]
 
   def isFinished: Boolean
 

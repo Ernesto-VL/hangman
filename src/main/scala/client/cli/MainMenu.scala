@@ -1,16 +1,16 @@
 package client.cli
 
 import api.{HangmanGame, HangmanInitializer}
-import game.engine.{HangmanEngine, WordGenerator}
-import utils.Constants.{DefaultAttempts, DimMessage, EmptyCharList, NextLetterMessage}
+import game.engine.HangmanEngine
+import utils.Constants.DimMessage
 
+import scala.annotation.tailrec
 import scala.io.StdIn
 
-object MainMenu extends App with HangmanInitializer{
+object MainMenu {
 
-  println("Welcome to Hangman, by EVL from Habla.")
-  mainLoop
-  def mainLoop: Unit = {
+  @tailrec
+  def mainLoop(implicit hangmanInitializer: HangmanInitializer): Unit = {
     println("\nWhat do you want to do?" +
       "\nOptions:" +
       "\n1: New game" +
@@ -23,8 +23,9 @@ object MainMenu extends App with HangmanInitializer{
     action match {
       case "1" =>
         val dim = StdIn.readLine(DimMessage).trim.toInt // todo meter comprobaciones
-        val game: HangmanEngine = createNewGame(dim)
+        val game: HangmanGame = hangmanInitializer.apply(dim)
         HangmanGameMenu.playLoop(game)
+        mainLoop
       case "2" =>
         println("Sorry, feature not implemented yet :)")
         mainLoop

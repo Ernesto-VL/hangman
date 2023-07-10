@@ -1,13 +1,13 @@
 package game.engine
 
-import api.{HangmanGame, HangmanState}
+import api.{HangmanGame, HangmanInitializer, HangmanState}
 import utils.Constants._
-
-case class HangmanEngine(val secretWord: String, successfulLetters: List[Char],
+case class HangmanEngine(secretWord: String, successfulLetters: List[Char],
                     failedLetters: List[Char], attemptsLeft: Int) extends HangmanGame {
 
   private val usedLetters: List[Char] = successfulLetters ++ failedLetters
 
+  import HangmanEngine._
   def wordState: String = {
     secretWord.flatMap(letter =>
       if (successfulLetters.contains(letter)) letter.toString
@@ -26,11 +26,11 @@ case class HangmanEngine(val secretWord: String, successfulLetters: List[Char],
     secretWord.toCharArray.distinct.diff(successfulLetters).isEmpty
   }
 
-  def validateLetter(letter: Char): Option[String] = {
+  def validateLetter(letter: Char): Option[Error] = {
     if (!letter.isLetter)
-      Some(ValidCharacterMessage)
+      Some(InvalidCharacter)
     else if (usedLetters.contains(letter))
-      Some(UsedLetterMessage)
+      Some(UsedAlready)
     else
       None
   }
@@ -38,9 +38,12 @@ case class HangmanEngine(val secretWord: String, successfulLetters: List[Char],
   override def getState: HangmanState = HangmanState(wordState, successfulLetters,
     failedLetters, attemptsLeft)
 
-  override def playLetter(letter: Char): Either[String, HangmanEngine] = {
-    if (isFinished) {
-      Right(this)
+  override def playLetter(letter: Char): Either[Error, HangmanEngine] = {
+    if(hasLoose) {
+      Left(NoMoreAttempts)
+    }
+    else if (checkWinner) {
+      Left(GuessedAlready)
     }
     else {
       validateLetter(letter) match {
@@ -52,5 +55,21 @@ case class HangmanEngine(val secretWord: String, successfulLetters: List[Char],
             Right(new HangmanEngine(secretWord, successfulLetters, failedLetters :+ letter, attemptsLeft - 1))
       }
     }
+  }
+}
+
+
+object HangmanEngine extends HangmanInitializer {
+
+  trait Error
+  case object InvalidCharacter extends Error
+  case object UsedAlready extends Error
+  case object NoMoreAttempts extends Error
+  case object GuessedAlready extends Error
+
+
+  override def apply(dim: Int): HangmanGame = {
+    val secretWord = WordGenerator.generateWord(dim)
+    new HangmanEngine(secretWord, EmptyCharList, EmptyCharList, DefaultAttempts)
   }
 }

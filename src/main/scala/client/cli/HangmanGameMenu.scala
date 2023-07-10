@@ -1,7 +1,6 @@
 package client.cli
 
-import api.HangmanState
-import game.engine.HangmanEngine
+import api.{HangmanGame, HangmanState}
 import utils.Constants._
 import utils.StringUtils.StringMethods
 
@@ -36,7 +35,7 @@ object HangmanGameMenu {
       Right(letter.toLowerCase.charAt(ZeroInt))
   }
 
-  def finalMessage(game: HangmanEngine): Unit = {
+  def finalMessage(game: HangmanGame): Unit = {
     if (game.checkWinner) {
       println(VictoryMessage)
     }
@@ -45,16 +44,16 @@ object HangmanGameMenu {
     }
   }
 
-  def makePlay(game: HangmanEngine, letter: String): HangmanEngine = {
+  def makePlay(game: HangmanGame, letter: String): HangmanGame = {
     val letterValidation = validateUserImputLetter(letter)
-    val playedGame = letterValidation.fold(
+    val playedGame: HangmanGame = letterValidation.fold(
       error => {
         println(error)
         game
       },
       char => game.playLetter(char).fold(
         error => {
-          println(error)
+          println(error) // todo properly print the error
           game
         },
         newGame => {
@@ -67,21 +66,20 @@ object HangmanGameMenu {
   }
 
   @tailrec
-  def playLoop(game: HangmanEngine): Unit = { // IO de cats effects
+  def playLoop(implicit game: HangmanGame): Unit = { // IO de cats effects
 
     val userAction = StdIn.readLine(NextLetterMessage).trim
 
     userAction match {
       case "quit" =>
       case "save" =>
-      case "mainMenu" => MainMenu.mainLoop
+      case "mainMenu" => //MainMenu.mainLoop
       case letter =>
         val playedGame = makePlay(game, letter)
         if (playedGame.isFinished) {
           finalMessage(playedGame)
-          MainMenu.mainLoop
+          //MainMenu.mainLoop
         } else playLoop(playedGame)
-
     }
   }
 }

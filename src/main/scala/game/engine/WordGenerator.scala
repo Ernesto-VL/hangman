@@ -1,8 +1,8 @@
 package game.engine
 
-import utils.Constants.{DimMessage, FilePath, ZeroInt}
+import utils.Constants.{FilePath, ZeroInt}
 
-import scala.io.{Source, StdIn}
+import scala.io.Source
 import scala.util.Random
 
 object WordGenerator {

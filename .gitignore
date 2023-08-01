@@ -46,6 +46,7 @@ scalastyle-output.xml
 bin/**
 tmp/**
 tmp/**/*
+src/main/scala/evl/**
 
 bin/
 tmp/

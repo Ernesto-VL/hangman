@@ -1,10 +1,10 @@
 package client.cli
 
 import api.{HangmanGame, HangmanState}
+import cats.effect.IO
 import utils.Constants._
 import utils.StringUtils.StringMethods
 
-import scala.annotation.tailrec
 import scala.io.StdIn
 
 /**
@@ -35,16 +35,16 @@ object HangmanGameMenu {
       Right(letter.toLowerCase.charAt(ZeroInt))
   }
 
-  def finalMessage(game: HangmanGame): Unit = {
+  def finalMessage(game: HangmanGame): IO[Unit] = {
     if (game.checkWinner) {
-      println(VictoryMessage)
+      IO(println(VictoryMessage))
     }
     else {
-      println(LooseMessage(game.secretWord))
+      IO(println(LooseMessage(game.secretWord)))
     }
   }
 
-  def makePlay(game: HangmanGame, letter: String): HangmanGame = {
+  def makePlay(game: HangmanGame, letter: String): IO[HangmanGame] = IO {
     val letterValidation = validateUserImputLetter(letter)
     val playedGame: HangmanGame = letterValidation.fold(
       error => {
@@ -63,23 +63,24 @@ object HangmanGameMenu {
       )
     )
     playedGame
-  }
+    }
 
-  @tailrec
-  def playLoop(implicit game: HangmanGame): Unit = { // IO de cats effects
+  def playLoop(implicit game: HangmanGame): IO[Unit] = {
 
-    val userAction = StdIn.readLine(NextLetterMessage).trim
+    val userAction = IO(StdIn.readLine(NextLetterMessage).trim)
 
-    userAction match {
-      case "quit" =>
-      case "save" =>
-      case "mainMenu" => //MainMenu.mainLoop
+    userAction.flatMap {
+      case "quit" => IO()
+      case "save" => IO()
+      case "mainMenu" => IO()
       case letter =>
         val playedGame = makePlay(game, letter)
-        if (playedGame.isFinished) {
-          finalMessage(playedGame)
-          //MainMenu.mainLoop
-        } else playLoop(playedGame)
+        playedGame.flatMap(currentGame => {
+          if (currentGame.isFinished) {
+            finalMessage(currentGame)
+          }
+          else playLoop(currentGame)
+        })
     }
   }
 }

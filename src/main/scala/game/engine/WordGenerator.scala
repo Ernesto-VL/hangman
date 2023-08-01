@@ -1,6 +1,8 @@
-import utils.Constants.{DimMessage, FilePath, ZeroInt}
+package game.engine
 
-import scala.io.{Source, StdIn}
+import utils.Constants.{FilePath, ZeroInt}
+
+import scala.io.Source
 import scala.util.Random
 
 object WordGenerator {
@@ -11,9 +13,8 @@ object WordGenerator {
     bufferedSource.close()
     words
   }
-  def generateWord: String = {
-    val dim = StdIn.readLine(DimMessage).trim.toInt // todo meter comprobaciones
 
+  def generateWord(dim: Int): String = {
     val wordsLengthDim = readWordsFile
       .filter(_.length == dim)
 

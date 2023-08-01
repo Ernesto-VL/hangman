@@ -13,7 +13,7 @@ object Constants {
   val DimMessage: String = s"\nEnter the length of the word: "
 
   val Quit: String = "quit"
-  val NextLetterMessage: String = "\nEnter the next letter (type 'quit' to exit): "
+  val NextLetterMessage: String = "\nEnter the next letter (type 'menu' to go to menu): "
   val VictoryMessage: String = "Well Done"
   val LooseMessage: String => String= (word: String) =>" You died \n" +
   " ---+\n :  |\n O  |\n-·- |\n |  |\n- - |\n  --+--" +

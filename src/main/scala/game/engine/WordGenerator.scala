@@ -1,6 +1,6 @@
 package game.engine
 
-import utils.Constants.{FilePath, ZeroInt}
+import game.engine.EngineConstants._
 
 import scala.io.Source
 import scala.util.Random

@@ -2,7 +2,7 @@ package client.cli
 
 import api.{HangmanGame, HangmanState}
 import cats.effect.IO
-import utils.Constants._
+import client.cli.ClientConstants._
 import utils.StringUtils.StringMethods
 
 import scala.io.StdIn
@@ -28,7 +28,7 @@ object HangmanGameMenu {
 
   def validateUserImputLetter(letter: String): Either[String, Char] = {
     if (letter.length != 1)
-      Left("Please enter only one character")
+      Left(OnlyOneCharacterMessage)
     else if (!letter.isLetter)
       Left(ValidCharacterMessage)
     else
@@ -70,9 +70,9 @@ object HangmanGameMenu {
     val userAction = IO(StdIn.readLine(NextLetterMessage).trim)
 
     userAction.flatMap {
-      case "quit" => IO()
-      case "save" => IO()
-      case "mainMenu" => IO()
+      case Quit => IO()
+      case Save => IO()
+      case MainMenu => IO()
       case letter =>
         val playedGame = makePlay(game, letter)
         playedGame.flatMap(currentGame => {

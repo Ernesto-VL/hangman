@@ -2,33 +2,28 @@ package client.cli
 
 import api.{HangmanGame, HangmanInitializer}
 import cats.effect.IO
-import utils.Constants.DimMessage
 import scala.io.StdIn
 import cats.implicits._
+import client.cli.ClientConstants._
 
 object MainMenu {
 
   def mainLoop(implicit hangmanInitializer: HangmanInitializer): IO[Unit] =
-    IO(println("\nWhat do you want to do?" +
-      "\nOptions:" +
-      "\n1: New game" +
-      "\n2: Load game" +
-      "\n3: Quit"
-    )) >>
-      IO(StdIn.readLine("Enter your option ").trim) >>={
+    IO(println(MainOptionsMesssage)) >>
+      IO(StdIn.readLine(UserOptionMessage).trim) >>={
 
-        case "1" =>
+        case OneString =>
           val dim = StdIn.readLine(DimMessage).trim.toInt // todo meter comprobaciones
           val game: HangmanGame = hangmanInitializer.apply(dim)
           HangmanGameMenu.playLoop(game) >> mainLoop
-        case "2" =>
+        case TwoString =>
           IO(println("Sorry, feature not implemented yet.")) >> mainLoop
 
-        case "3" =>
-          IO(println("See you later alligator"))
+        case ThreeString =>
+          IO(println(ByeMessage))
 
         case _ =>
-          IO(println("Unknown option")) >> mainLoop
+          IO(println(UnknownMessage)) >> mainLoop
         // todo
       }
 

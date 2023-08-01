@@ -1,7 +1,7 @@
 package game.engine
 
 import api.{HangmanGame, HangmanInitializer, HangmanState}
-import utils.Constants._
+import game.engine.EngineConstants._
 case class HangmanEngine(secretWord: String, successfulLetters: List[Char],
                     failedLetters: List[Char], attemptsLeft: Int) extends HangmanGame {
 
@@ -70,6 +70,7 @@ object HangmanEngine extends HangmanInitializer {
 
   override def apply(dim: Int): HangmanGame = {
     val secretWord = WordGenerator.generateWord(dim)
-    new HangmanEngine(secretWord, EmptyCharList, EmptyCharList, DefaultAttempts)
+//    new HangmanEngine(secretWord, EmptyCharList, EmptyCharList, DefaultAttempts)
+    new HangmanEngine(secretWord, EmptyCharList, EmptyCharList, 3)
   }
 }
